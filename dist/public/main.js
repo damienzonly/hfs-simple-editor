@@ -1,24 +1,28 @@
 {
     const r = HFS.React
-    HFS.onEvent('fileMenu', ({entry}) => {
-        if (entry.isFolder) return
+    HFS.onEvent('fileMenu', ({ entry: ent }) => {
+        if (ent.isFolder) return
         return {
             label: 'Edit',
             icon: 'edit',
             onClick() {
                 HFS.dialogLib.newDialog({
                     Content() {
-                        const [value, onValueChange] = r.useState('function add(a, b) {\n  return a + b;\n}')
+                        const [value, change] = r.useState('')
+                        r.useEffect(() => {
+                            fetch(ent.uri + '?dl').then(v => v.text()).then(change).catch(() => change(''))
+                        }, [])
+
+                        function save() {
+                            return fetch(ent.uri, { method: 'PUT', body: value })
+                        }
+
                         return HFS.h(r.Fragment, null, HFS.h(Editor, {
                             value,
-                            onValueChange,
-                            style: {
-                                minWidth: '40vw',
-                                minHeight: '30vh',
-                                resize: 'both'
-                            },
+                            onValueChange: change,
+                            style: { minWidth: '40vw', minHeight: '30vh', resize: 'both' },
                             highlight: () => value,
-                        }), HFS.h('button', {style: {marginTop: 20}}, 'Save'))
+                        }), HFS.h('button', { style: { marginTop: 20 }, onClick: save }, 'Save'))
                     }
                 })
             }
