@@ -1,12 +1,13 @@
 {
+    const limit = HFS.getPluginConfig()['limitMB']*Math.pow(1024, 2)
     const r = HFS.React
     HFS.onEvent('fileMenu', ({ entry: ent }) => {
-        if (ent.isFolder) return
+        if (ent.isFolder || !HFS.state.props.can_upload || ent?.s > limit) return
         return {
             label: 'Edit',
             icon: 'edit',
             onClick() {
-                HFS.dialogLib.newDialog({
+                const dialog = HFS.dialogLib.newDialog({
                     Content() {
                         const [value, change] = r.useState('')
                         r.useEffect(() => {
@@ -14,7 +15,7 @@
                         }, [])
 
                         function save() {
-                            return fetch(ent.uri, { method: 'PUT', body: value })
+                            fetch(ent.uri, { method: 'PUT', body: value }).then(dialog.close)
                         }
 
                         return HFS.h(r.Fragment, null, HFS.h(Editor, {
