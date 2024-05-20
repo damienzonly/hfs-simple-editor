@@ -34,7 +34,7 @@
             Content() {
                 const [value, change] = r.useState('')
                 r.useEffect(() => {
-                    fetch(ent.uri + '?dl').then(v => v.text()).then(change).catch(() => change(''))
+                    fetch(ent.uri + '?dl', {cache: 'no-store'}).then(v => v.text()).then(change).catch(() => change(''))
                 }, [])
                 return HFS.h(r.Fragment, null, HFS.h(Editor, {
                     value,
@@ -44,7 +44,7 @@
                 }), HFS.h('button', { style: { marginTop: 20 }, onClick: save }, 'Save'))
 
                 function save() {
-                    fetch(ent.uri, { method: 'PUT', body: value }).then(dialog.close)
+                    fetch(ent.uri + '?existing=overwrite', { method: 'PUT', body: value }).then(dialog.close)
                 }
             }
         }

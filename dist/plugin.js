@@ -1,4 +1,4 @@
-exports.version = 1.1
+exports.version = 1.2
 exports.description = "Simple text editor"
 exports.apiRequired = 8.65
 exports.repo = "damienzonly/hfs-simple-editor"
