@@ -70,6 +70,7 @@
 
     async function createFile(path, filename, d) {
         if (!filename) return
+        if (path === '/') path = ''
         const uri = `${path}/${filename}`
         // check if filename already exists, with fresh data instead of HFS.state.list
         const s = await HFS.apiCall('get_file_list', { uri: path })
