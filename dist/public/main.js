@@ -55,7 +55,11 @@
                 }), HFS.h('button', { style: { marginTop: 20 }, onClick: save }, 'Save'))
 
                 function save() {
-                    fetch(ent.uri + '?existing=overwrite', { method: 'PUT', body: value }).then(dialog.close)
+                    fetch(ent.uri + '?existing=overwrite', { method: 'PUT', body: value }).then(res => {
+                        if (!res.ok)
+                            return HFS.dialogLib.alertDialog("Failed: " + res.statusText)
+                        dialog.close()
+                    })
                 }
             }
         }
